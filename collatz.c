@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   int hitCount = 0;
   int totalRequests = 0;
   FILE *csv_file = fopen("Random_Percent.csv", "w");
-  fprintf(csv_file, "N,Min,Max,Random Number,Steps\n");
+  fprintf(csv_file, "user_iteration ,Min,Max, rand_num ,Steps\n");
 
   for (int ix = 0; ix < user_iteration; ix++) {
     int rand_num = rand() % (Max - Min + 1) + Min;
@@ -39,7 +39,9 @@ int main(int argc, char *argv[]) {
     fprintf(csv_file, "%d,%d,%d,%d,%llu\n", user_iteration, Min, Max, rand_num,
             steps);
   }
-  printf("Hit Count: %d, Total Requests: %d\n", hitCount, totalRequests);
+  int hitMisses = totalRequests - hitCount;
+  printf("Hit Count: %d, Hit Misesses: %d, Total Requests: %d\n", hitCount,
+         hitMisses, totalRequests);
 
   double hitPercentage;
   if (totalRequests == 0) {
