@@ -1,36 +1,11 @@
+#include "collatz.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 #include "cache.h"
-
-unsigned long long int collatz_steps(unsigned long long int n) {
-  unsigned long long int steps = 0;
-  while (n != 1) {
-    if (n % 2 == 0) {
-      n = n / 2;
-    } else {
-      n = 3 * n + 1;
-    }
-    steps++;
-  }
-  return steps;
-}
-
-unsigned long long int collatz_cached(Cache *cache, int key, CachePolicy policy,
-                                      int *hitCount, int *totalRequests) {
-  (*totalRequests)++;
-  CacheEntry *entry = lookup(cache, key);
-  if (entry != NULL) {
-    entry->keyUsage++;
-    (*hitCount)++;
-    return entry->data;
-  }
-  unsigned long long int steps = collatz_steps(key);
-  insert(cache, key, steps, policy);
-  return steps;
-}
 
 int main(int argc, char *argv[]) {
   if (argc != 6) {
@@ -44,14 +19,7 @@ int main(int argc, char *argv[]) {
   char *cache_policy = argv[4];
   int cache_size = atoi(argv[5]);
 
-  CachePolicy policy = CACHE_NONE;
-  if (strcmp(cache_policy, "none") == 0) {
-    policy = CACHE_NONE;
-  } else if (strcmp(cache_policy, "LRU") == 0) {
-    policy = CACHE_LRU;
-  } else if (strcmp(cache_policy, "random") == 0) {
-    policy = CACHE_RANDOM;
-  }
+  CachePolicy policy = getPolicy(cache_policy);
 
   Cache *cache = initialize(cache_size);
   if (!cache) {
