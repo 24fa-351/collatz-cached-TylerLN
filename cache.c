@@ -2,23 +2,25 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
-Cache *initialize(int capacity) {
+Cache *initializeCache(int capacity) {
   Cache *cache = (Cache *)malloc(sizeof(Cache));
-  if (!cache) {
-    printf("Memory Allocation Failed\n");
-    return NULL;
-  }
 
-  cache->entries = (CacheEntry *)malloc(sizeof(CacheEntry) * capacity);
-  if (!cache->entries) {
-    printf("Memory Allocation Failed\n");
-    free(cache);
+  if (cache == NULL) {
     return NULL;
   }
 
   cache->capacity = capacity;
   cache->entriesCount = 0;
+
+  cache->entries = (CacheEntry *)calloc(capacity, sizeof(CacheEntry));
+
+  if (cache->entries == NULL) {
+    free(cache);
+    return NULL;
+  }
+
   return cache;
 }
 
@@ -29,7 +31,6 @@ CacheEntry *lookup(Cache *cache, int key) {
       return &cache->entries[ix];
     }
   }
-  printf("Key %d not in cache\n", key);
   return NULL;
 }
 
@@ -40,8 +41,11 @@ void insert(Cache *cache, int key, int data, CachePolicy policy) {
     cache->entries[cache->entriesCount].keyUsage = 0;
     cache->entriesCount++;
     printf("Inserted key %d with data %d\n", key, data);
+
   } else {
     int evictIndex = findEntryToEvict(cache, policy);
+    printf("Evicting key %d with data %d\n", cache->entries[evictIndex].key,
+           cache->entries[evictIndex].data);
     evict(cache, evictIndex);
 
     cache->entries[evictIndex].key = key;
@@ -51,7 +55,7 @@ void insert(Cache *cache, int key, int data, CachePolicy policy) {
   }
 }
 
-int count_of_entries(Cache *cache) { return cache->entriesCount; }
+int countOfEntries(Cache *cache) { return cache->entriesCount; }
 
 int findEntryToEvict(Cache *cache, CachePolicy policy) {
   int evictIndex = -1;
@@ -68,9 +72,7 @@ int findEntryToEvict(Cache *cache, CachePolicy policy) {
         evictIndex = i;
       }
     }
-  }
-
-  else if (policy == CACHE_RANDOM) {
+  } else if (policy == CACHE_RANDOM) {
     srand((unsigned int)time(NULL));
     evictIndex = rand() % cache->entriesCount;
   }
@@ -79,9 +81,6 @@ int findEntryToEvict(Cache *cache, CachePolicy policy) {
 }
 
 void evict(Cache *cache, int entryIndex) {
-  printf("Evicting key %d with data %d\n", cache->entries[entryIndex].key,
-         cache->entries[entryIndex].data);
-
   cache->entries[entryIndex].key = -1;
   cache->entries[entryIndex].data = 0;
   cache->entries[entryIndex].keyUsage = 0;
@@ -94,9 +93,7 @@ void update(Cache *cache, int key, int newData) {
     if (cache->entries[i].key == key) {
       cache->entries[i].data = newData;
       cache->entries[i].keyUsage++;
-      printf("Updated key %d with new data %d\n", key, newData);
       return;
     }
   }
-  printf("Key %d not found for update.\n", key);
 }
