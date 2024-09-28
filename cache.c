@@ -4,23 +4,18 @@
 #include <stdlib.h>
 #include <time.h>
 
-Cache *initializeCache(int capacity) {
+Cache *initialize(int capacity) {
   Cache *cache = (Cache *)malloc(sizeof(Cache));
-
   if (cache == NULL) {
     return NULL;
   }
-
   cache->capacity = capacity;
   cache->entriesCount = 0;
-
   cache->entries = (CacheEntry *)calloc(capacity, sizeof(CacheEntry));
-
   if (cache->entries == NULL) {
     free(cache);
     return NULL;
   }
-
   return cache;
 }
 
@@ -40,18 +35,18 @@ void insert(Cache *cache, int key, int data, CachePolicy policy) {
     cache->entries[cache->entriesCount].data = data;
     cache->entries[cache->entriesCount].keyUsage = 0;
     cache->entriesCount++;
-    printf("Inserted key %d with data %d\n", key, data);
-
+    //  printf("Inserted key %d with data %d\n", key, data);
   } else {
     int evictIndex = findEntryToEvict(cache, policy);
-    printf("Evicting key %d with data %d\n", cache->entries[evictIndex].key,
-           cache->entries[evictIndex].data);
+    //   printf("Evicting key %d with data %d\n",
+    //   cache->entries[evictIndex].key,
+    //        cache->entries[evictIndex].data);
     evict(cache, evictIndex);
 
     cache->entries[evictIndex].key = key;
     cache->entries[evictIndex].data = data;
     cache->entries[evictIndex].keyUsage = 0;
-    printf("Inserted key %d with data %d after eviction\n", key, data);
+    // printf("Inserted key %d with data %d after eviction\n", key, data);
   }
 }
 
@@ -65,18 +60,15 @@ int findEntryToEvict(Cache *cache, CachePolicy policy) {
   }
 
   if (policy == CACHE_LRU) {
-    int minUsage = INT_MAX;
-    for (int i = 0; i < cache->entriesCount; i++) {
-      if (cache->entries[i].keyUsage < minUsage) {
-        minUsage = cache->entries[i].keyUsage;
-        evictIndex = i;
+    int evictIndex = 0;
+    for (int ix = 1; ix < cache->entriesCount; ix++) {
+      if (cache->entries[ix].keyUsage < cache->entries[evictIndex].keyUsage) {
+        evictIndex = ix;
       }
     }
   } else if (policy == CACHE_RANDOM) {
-    srand((unsigned int)time(NULL));
     evictIndex = rand() % cache->entriesCount;
   }
-
   return evictIndex;
 }
 
@@ -84,7 +76,6 @@ void evict(Cache *cache, int entryIndex) {
   cache->entries[entryIndex].key = -1;
   cache->entries[entryIndex].data = 0;
   cache->entries[entryIndex].keyUsage = 0;
-
   cache->entriesCount--;
 }
 
