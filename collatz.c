@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  int user_n = atoi(argv[1]);
+  int user_iteration = atoi(argv[1]);
   int Min = atoi(argv[2]);
   int Max = atoi(argv[3]);
   char *cache_policy = argv[4];
@@ -28,12 +28,16 @@ int main(int argc, char *argv[]) {
   srand(time(NULL));
   int hitCount = 0;
   int totalRequests = 0;
+  FILE *csv_file = fopen("Random_Percent.csv", "w");
+  fprintf(csv_file, "N,Min,Max,Random Number,Steps\n");
 
-  for (int ix = 0; ix < user_n; ix++) {
+  for (int ix = 0; ix < user_iteration; ix++) {
     int rand_num = rand() % (Max - Min + 1) + Min;
     unsigned long long int steps =
         collatz_cached(cache, rand_num, policy, &hitCount, &totalRequests);
     printf("%d, %llu steps\n", rand_num, steps);
+    fprintf(csv_file, "%d,%d,%d,%d,%llu\n", user_iteration, Min, Max, rand_num,
+            steps);
   }
   printf("Hit Count: %d, Total Requests: %d\n", hitCount, totalRequests);
 
@@ -43,9 +47,8 @@ int main(int argc, char *argv[]) {
   } else {
     hitPercentage = (hitCount * 100.0 / totalRequests);
   }
-
   printf("Cache Hit Percentage: %.2f%%\n", hitPercentage);
-
+  fclose(csv_file);
   free(cache->entries);
   free(cache);
 
