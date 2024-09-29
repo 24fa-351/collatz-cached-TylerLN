@@ -62,7 +62,7 @@ int findEntryToEvict(Cache *cache, CachePolicy policy) {
       }
     }
   } else if (policy == CACHE_RANDOM) {
-    srand((unsigned int)time(NULL));
+    srand(time(NULL));
     evictIndex = rand() % cache->entriesCount;
   }
 

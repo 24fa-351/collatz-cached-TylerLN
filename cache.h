@@ -26,4 +26,4 @@ int findEntryToEvict(Cache *cache, CachePolicy policy);
 void evict(Cache *cache, int entryIndex);
 void update(Cache *cache, int key, int newData);
 
-#endif  // CACHE_H
+#endif

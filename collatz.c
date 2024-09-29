@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[]) {
   if (argc != 6) {
-    printf("Invalid/not enough inputs");
+    printf("Inputs Invalid");
     return 1;
   }
 
