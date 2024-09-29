@@ -52,9 +52,7 @@ int findEntryToEvict(Cache *cache, CachePolicy policy) {
 
   if (policy == CACHE_NONE) {
     return -1;
-  }
-
-  if (policy == CACHE_LRU) {
+  } else if (policy == CACHE_LRU) {
     int evictIndex = 0;
     for (int ix = 1; ix < cache->entriesCount; ix++) {
       if (cache->entries[ix].keyUsage < cache->entries[evictIndex].keyUsage) {
@@ -65,7 +63,6 @@ int findEntryToEvict(Cache *cache, CachePolicy policy) {
     srand(time(NULL));
     evictIndex = rand() % cache->entriesCount;
   }
-
   return evictIndex;
 }
 
@@ -73,7 +70,6 @@ void evict(Cache *cache, int entryIndex) {
   cache->entries[entryIndex].key = -1;
   cache->entries[entryIndex].data = 0;
   cache->entries[entryIndex].keyUsage = 0;
-
   cache->entriesCount--;
 }
 

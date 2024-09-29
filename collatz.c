@@ -25,9 +25,11 @@ int main(int argc, char *argv[]) {
   if (!cache) {
     return 1;
   }
+
   srand(time(NULL));
   int hitCount = 0;
   int totalRequests = 0;
+
   FILE *csv_file = fopen("Random_Percent.csv", "w");
   fprintf(csv_file, "user_iteration ,Min,Max, rand_num ,Steps\n");
 
@@ -39,6 +41,7 @@ int main(int argc, char *argv[]) {
     fprintf(csv_file, "%d,%d,%d,%d,%llu\n", user_iteration, Min, Max, rand_num,
             steps);
   }
+
   int hitMisses = totalRequests - hitCount;
   printf("Hit Count: %d, Hit Misesses: %d, Total Requests: %d\n", hitCount,
          hitMisses, totalRequests);
@@ -49,8 +52,10 @@ int main(int argc, char *argv[]) {
   } else {
     hitPercentage = (hitCount * 100.0 / totalRequests);
   }
+
   printf("Cache Hit Percentage: %.2f%%\n", hitPercentage);
   fclose(csv_file);
+
   free(cache->entries);
   free(cache);
 
