@@ -38,7 +38,6 @@ void insert(Cache *cache, int key, int data, CachePolicy policy) {
   } else {
     int evictIndex = findEntryToEvict(cache, policy);
     evict(cache, evictIndex);
-
     cache->entries[evictIndex].key = key;
     cache->entries[evictIndex].data = data;
     cache->entries[evictIndex].keyUsage = 0;

@@ -35,12 +35,12 @@ unsigned long long int collatz_cached(Cache *cache, int key, CachePolicy policy,
   return steps;
 }
 
-CachePolicy getPolicy(const char *cache_policy) {
-  if (strcmp(cache_policy, "none") == 0) {
+CachePolicy getPolicy(const char *cachePolicy) {
+  if (strcmp(cachePolicy, "none") == 0) {
     return CACHE_NONE;
-  } else if (strcmp(cache_policy, "LRU") == 0) {
+  } else if (strcmp(cachePolicy, "LRU") == 0) {
     return CACHE_LRU;
-  } else if (strcmp(cache_policy, "random") == 0) {
+  } else if (strcmp(cachePolicy, "random") == 0) {
     return CACHE_RANDOM;
   }
   return CACHE_NONE;
