@@ -7,13 +7,13 @@
 typedef struct {
   int key;
   int data;
-  int keyUsage;
+  int key_usage;
 } CacheEntry;
 
 typedef struct {
   CacheEntry *entries;
   int capacity;
-  int entriesCount;
+  int entries_count;
 } Cache;
 
 typedef enum { CACHE_NONE, CACHE_LRU, CACHE_RANDOM } CachePolicy;
@@ -21,9 +21,9 @@ typedef enum { CACHE_NONE, CACHE_LRU, CACHE_RANDOM } CachePolicy;
 Cache *initialize(int capacity);
 CacheEntry *lookup(Cache *cache, int key);
 void insert(Cache *cache, int key, int data, CachePolicy policy);
-int countEntries(Cache *cache);
-int findEntryToEvict(Cache *cache, CachePolicy policy);
-void evict(Cache *cache, int entryIndex);
-void update(Cache *cache, int key, int newData);
+int count_entries(Cache *cache);
+int find_entry_to_evict(Cache *cache, CachePolicy policy);
+void evict(Cache *cache, int entry_index);
+void update(Cache *cache, int key, int new_data);
 
-#endif
+#endif  // CACHE_H
