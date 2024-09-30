@@ -7,7 +7,6 @@
 typedef struct {
   int key;
   int data;
-  int key_usage;
 } CacheEntry;
 
 typedef struct {
@@ -19,11 +18,9 @@ typedef struct {
 typedef enum { CACHE_NONE, CACHE_LRU, CACHE_RANDOM } CachePolicy;
 
 Cache *initialize(int capacity);
-CacheEntry *lookup(Cache *cache, int key);
+CacheEntry *lookup(Cache *cache, int key, CachePolicy policy);
 void insert(Cache *cache, int key, int data, CachePolicy policy);
-int count_entries(Cache *cache);
 int find_entry_to_evict(Cache *cache, CachePolicy policy);
 void evict(Cache *cache, int entry_index);
-void update(Cache *cache, int key, int new_data);
 
 #endif  // CACHE_H

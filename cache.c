@@ -19,10 +19,17 @@ Cache *initialize(int capacity) {
   return cache;
 }
 
-CacheEntry *lookup(Cache *cache, int key) {
+CacheEntry *lookup(Cache *cache, int key, CachePolicy policy) {
   for (int ix = 0; ix < cache->entries_count; ix++) {
     if (cache->entries[ix].key == key) {
-      cache->entries[ix].key_usage++;
+      if (policy == CACHE_LRU) {
+        CacheEntry accessed_entry = cache->entries[ix];
+
+        for (int j = ix; j < cache->entries_count - 1; j++) {
+          cache->entries[j] = cache->entries[j + 1];
+        }
+        cache->entries[cache->entries_count - 1] = accessed_entry;
+      }
       return &cache->entries[ix];
     }
   }
@@ -30,55 +37,40 @@ CacheEntry *lookup(Cache *cache, int key) {
 }
 
 void insert(Cache *cache, int key, int data, CachePolicy policy) {
-  if (cache->entries_count < cache->capacity) {
-    cache->entries[cache->entries_count].key = key;
-    cache->entries[cache->entries_count].data = data;
-    cache->entries[cache->entries_count].key_usage = 0;
-    cache->entries_count++;
-  } else {
-    int evict_index = find_entry_to_evict(cache, policy);
-    evict(cache, evict_index);
-    cache->entries[evict_index].key = key;
-    cache->entries[evict_index].data = data;
-    cache->entries[evict_index].key_usage = 0;
-  }
-}
-
-int count_of_entries(Cache *cache) { return cache->entries_count; }
-
-int find_entry_to_evict(Cache *cache, CachePolicy policy) {
-  int evict_index = -1;
-
-  if (policy == CACHE_NONE) {
-    return -1;
-  } else if (policy == CACHE_LRU) {
-    int evict_index = 0;
-    for (int iy = 1; iy < cache->entries_count; iy++) {
-      if (cache->entries[iy].key_usage <
-          cache->entries[evict_index].key_usage) {
-        evict_index = iy;
-      }
-    }
-  } else if (policy == CACHE_RANDOM) {
-    srand(time(NULL));
-    evict_index = rand() % cache->entries_count;
-  }
-  return evict_index;
-}
-
-void evict(Cache *cache, int entry_index) {
-  cache->entries[entry_index].key = -1;
-  cache->entries[entry_index].data = 0;
-  cache->entries[entry_index].key_usage = 0;
-  cache->entries_count--;
-}
-
-void update(Cache *cache, int key, int new_data) {
-  for (int iz = 0; iz < cache->entries_count; iz++) {
-    if (cache->entries[iz].key == key) {
-      cache->entries[iz].data = new_data;
-      cache->entries[iz].key_usage++;
+  for (int ix = 0; ix < cache->entries_count; ix++) {
+    if (cache->entries[ix].key == key) {
+      cache->entries[ix].data = data;
+      lookup(cache, key, policy);
       return;
     }
   }
+  if (cache->entries_count >= cache->capacity) {
+    int evict_index = find_entry_to_evict(cache, policy);
+    if (evict_index != -1) {
+      evict(cache, evict_index);
+    } else {
+      return;
+    }
+  }
+  cache->entries[cache->entries_count].key = key;
+  cache->entries[cache->entries_count].data = data;
+  cache->entries_count++;
+}
+
+int find_entry_to_evict(Cache *cache, CachePolicy policy) {
+  if (policy == CACHE_NONE) {
+    return -1;
+  } else if (policy == CACHE_LRU) {
+    return 0;
+  } else if (policy == CACHE_RANDOM) {
+    return rand() % cache->entries_count;
+  }
+  return -1;
+}
+
+void evict(Cache *cache, int entry_index) {
+  for (int i = entry_index; i < cache->entries_count - 1; i++) {
+    cache->entries[i] = cache->entries[i + 1];
+  }
+  cache->entries_count--;
 }

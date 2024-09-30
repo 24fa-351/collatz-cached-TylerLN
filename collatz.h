@@ -24,14 +24,14 @@ unsigned long long int collatz_steps(unsigned long long int n) {
 unsigned long long int collatz_cached(Cache *cache, int key, CachePolicy policy,
                                       int *hit_count, int *total_requests) {
   (*total_requests)++;
-  CacheEntry *entry = lookup(cache, key);
+  CacheEntry *entry = lookup(cache, key, policy);
   if (entry != NULL) {
-    entry->key_usage++;
     (*hit_count)++;
     return entry->data;
   }
   unsigned long long int steps = collatz_steps(key);
   insert(cache, key, steps, policy);
+
   return steps;
 }
 
