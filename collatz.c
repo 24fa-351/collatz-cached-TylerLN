@@ -19,14 +19,7 @@ int main(int argc, char *argv[]) {
   char *cache_policy = argv[4];
   int cache_size = atoi(argv[5]);
 
-  FILE *csv_file = fopen("Random_Percent.csv", "w");
-  if (csv_file == NULL) {
-    printf("Error opening file!\n");
-    return 1;
-  }
-
   CachePolicy policy = get_policy(cache_policy);
-
   Cache *cache = initialize(cache_size);
   if (!cache) {
     return 1;
@@ -40,15 +33,12 @@ int main(int argc, char *argv[]) {
     int rand_num = rand() % (Max - Min + 1) + Min;
     unsigned long long int steps =
         collatz_cached(cache, rand_num, policy, &hit_count, &total_requests);
-    fprintf(csv_file, "%d,%llu\n", rand_num, steps);
-
     printf("%d, %llu steps\n", rand_num, steps);
   }
 
   int hit_misses = total_requests - hit_count;
   printf("Hit Count: %d, Hit Misses: %d, Total Requests: %d\n", hit_count,
          hit_misses, total_requests);
-  fclose(csv_file);
 
   double hit_percentage;
   if (total_requests == 0) {
