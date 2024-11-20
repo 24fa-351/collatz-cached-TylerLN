@@ -8,13 +8,13 @@
 
 #include "cache.h"
 
-unsigned long long int collatz_steps(unsigned long long int n) {
+unsigned long long int collatz_steps(unsigned long long int num) {
   unsigned long long int steps = 0;
-  while (n != 1) {
-    if (n % 2 == 0) {
-      n = n / 2;
+  while (num != 1) {
+    if (num % 2 == 0) {
+      num = num / 2;
     } else {
-      n = 3 * n + 1;
+      num = 3 * num + 1;
     }
     steps++;
   }

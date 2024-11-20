@@ -20,6 +20,7 @@ int main(int argc, char *argv[]) {
   int cache_size = atoi(argv[5]);
 
   CachePolicy policy = get_policy(cache_policy);
+
   Cache *cache = initialize(cache_size);
   if (!cache) {
     return 1;
@@ -33,6 +34,7 @@ int main(int argc, char *argv[]) {
     int rand_num = rand() % (Max - Min + 1) + Min;
     unsigned long long int steps =
         collatz_cached(cache, rand_num, policy, &hit_count, &total_requests);
+
     printf("%d, %llu steps\n", rand_num, steps);
   }
 
