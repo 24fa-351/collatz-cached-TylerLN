@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   char *cache_policy = argv[4];
   int cache_size = atoi(argv[5]);
 
-  CachePolicy policy = get_policy(cache_policy);
+  Cache_Policy policy = get_policy(cache_policy);
 
   Cache *cache = initialize(cache_size);
   if (!cache) {

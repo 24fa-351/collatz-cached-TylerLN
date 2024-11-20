@@ -21,10 +21,10 @@ unsigned long long int collatz_steps(unsigned long long int num) {
   return steps;
 }
 
-unsigned long long int collatz_cached(Cache *cache, int key, CachePolicy policy,
+unsigned long long int collatz_cached(Cache *cache, int key, Cache_Policy policy,
                                       int *hit_count, int *total_requests) {
   (*total_requests)++;
-  CacheEntry *entry = lookup(cache, key, policy);
+  Cache_Entry *entry = lookup(cache, key, policy);
   if (entry != NULL) {
     (*hit_count)++;
     return entry->data;
@@ -35,7 +35,7 @@ unsigned long long int collatz_cached(Cache *cache, int key, CachePolicy policy,
   return steps;
 }
 
-CachePolicy get_policy(const char *policy) {
+Cache_Policy get_policy(const char *policy) {
   if (strcmp(policy, "none") == 0) {
     return CACHE_NONE;
   } else if (strcmp(policy, "LRU") == 0) {
@@ -46,4 +46,4 @@ CachePolicy get_policy(const char *policy) {
   return CACHE_NONE;
 }
 
-#endif  // COLLATZ_H
+#endif  

@@ -11,7 +11,7 @@ Cache *initialize(int capacity) {
   }
   cache->capacity = capacity;
   cache->entries_count = 0;
-  cache->entries = (CacheEntry *)calloc(capacity, sizeof(CacheEntry));
+  cache->entries = (Cache_Entry *)calloc(capacity, sizeof(Cache_Entry));
   if (cache->entries == NULL) {
     free(cache);
     return NULL;
@@ -19,11 +19,11 @@ Cache *initialize(int capacity) {
   return cache;
 }
 
-CacheEntry *lookup(Cache *cache, int key, CachePolicy policy) {
+Cache_Entry *lookup(Cache *cache, int key, Cache_Policy policy) {
   for (int ix = 0; ix < cache->entries_count; ix++) {
     if (cache->entries[ix].key == key) {
       if (policy == CACHE_LRU) {
-        CacheEntry accessed_entry = cache->entries[ix];
+        Cache_Entry accessed_entry = cache->entries[ix];
 
         for (int jx = ix; jx < cache->entries_count - 1; jx++) {
           cache->entries[jx] = cache->entries[jx + 1];
@@ -36,7 +36,7 @@ CacheEntry *lookup(Cache *cache, int key, CachePolicy policy) {
   return NULL;
 }
 
-void insert(Cache *cache, int key, int data, CachePolicy policy) {
+void insert(Cache *cache, int key, int data, Cache_Policy policy) {
   for (int iy = 0; iy < cache->entries_count; iy++) {
     if (cache->entries[iy].key == key) {
       cache->entries[iy].data = data;
@@ -56,7 +56,7 @@ void insert(Cache *cache, int key, int data, CachePolicy policy) {
   cache->entries_count++;
 }
 
-int find_entry_to_evict(Cache *cache, CachePolicy policy) {
+int find_entry_to_evict(Cache *cache, Cache_Policy policy) {
   if (policy == CACHE_NONE) {
     return -1;
   } else if (policy == CACHE_LRU) {
