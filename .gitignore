@@ -1,0 +1,5 @@
+# ignore executable
+*.exe
+
+#ignore csv files
+*.csv
