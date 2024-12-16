@@ -1,2 +1,5 @@
-#ignore executable
+# ignore executable
 *.exe
+
+#ignore csv files
+*.csv
